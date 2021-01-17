@@ -41,7 +41,7 @@ def hsv_mask(img_path):
         lower_hsv = np.array([ilowH, ilowS, ilowV])
         higher_hsv = np.array([ihighH, ihighS, ihighV])
         mask = cv2.inRange(hsv, lower_hsv, higher_hsv)
-        dim = (width // 3, height // 3)
+        dim = (width // 6, height // 6)
         cv2.imshow('trackbars', cv2.resize(mask, dim, interpolation=cv2.INTER_AREA))
         cv2.imshow('original image', cv2.resize(frame, dim, interpolation=cv2.INTER_AREA))
 
@@ -53,4 +53,4 @@ def hsv_mask(img_path):
 
 
 if __name__ == '__main__':
-    hsv_mask("frames/frame000000.jpg")
+    hsv_mask("frames/frame00000000.jpg")

@@ -4,8 +4,6 @@ import numpy as np
 
 
 def detectBalls(image, hsv_low, hsv_high, min_area=200):
-    lowerOrange = np.array([0, 170, 117])
-    upperOrange = np.array([36, 256, 256])
 
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, hsv_low, hsv_high)

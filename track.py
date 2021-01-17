@@ -7,10 +7,10 @@ dim_z = 2
 
 
 class Track:
-    def __init__(self, initialx, initialy, temporal_frame=50):
+    def __init__(self, initialx, initialy, temporal_frame=5):
         self.id = id(self)
         self.prev_states = []
-        self.temporal_frame = 50
+        self.temporal_frame = temporal_frame
         self.kf = KalmanFilter(dim_x=dim_x, dim_z=dim_z)
         self.kf.x = np.expand_dims(
             np.array([initialx, initialy, 0, 0, -9.8]), axis=1)
@@ -82,6 +82,27 @@ class Track:
                      int(self.prev_states[x+1][1])),
                     bgr, 20)
         return image
+
+    def drawContrail(self, image, min_age=5):
+        if self.age >= min_age:
+            image = image.astype('uint32')
+            white = np.ones_like(image, dtype=np.uint8) * 255
+            blank = np.zeros_like(image, dtype=np.uint8)
+            for x in range(len(self.prev_states)-1):
+                bgr = (0, 0, 240)
+                blank = cv2.line(
+                    blank, (int(self.prev_states[x][0]), int(
+                        self.prev_states[x][1])),
+                    (int(self.prev_states[x+1][0]),
+                     int(self.prev_states[x+1][1])),
+                    bgr, 50)
+                blank = cv2.GaussianBlur(blank, (71, 71), 0)
+                blank = np.minimum(blank, white)  # keep it 255
+
+            image += blank  # could be above 255
+            image = np.minimum(image, white)
+
+        return image.astype('uint8')
 
 
 def cleanTracks(tracks, mia_cutoff=4):
