@@ -89,19 +89,18 @@ class Track:
         else:
             return None
 
-    def drawContrail(self, image, min_age=5):
+    def drawContrail(self, image, min_age=5, colour=(10, 10, 240)):
         if self.age >= min_age:
             image = image.astype('uint32')
             white = np.ones_like(image, dtype=np.uint8) * 255
             blank = np.zeros_like(image, dtype=np.uint8)
             for x in range(len(self.prev_states)-1):
-                bgr = (0, 0, 240)
                 blank = cv2.line(
                     blank, (int(self.prev_states[x][0]), int(
                         self.prev_states[x][1])),
                     (int(self.prev_states[x+1][0]),
                      int(self.prev_states[x+1][1])),
-                    bgr, 50)
+                    colour, 50)
                 blank = cv2.GaussianBlur(blank, (71, 71), 0)
                 blank = np.minimum(blank, white)  # keep it 255
 

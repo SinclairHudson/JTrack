@@ -97,9 +97,8 @@ def TrackingJugglingVideo(vidpath, lowHSV, highHSV, min_area=250, framerate=60,
         # image = cv2.drawKeypoints(image, detections, np.array([]),
         # (255, 0, 0), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 
-        print(len(tracks))
         for track in tracks:
-            image = track.drawTemporalLines(image)
+            image = track.drawContrail(image)
 
             # peak = track.peak(max_y=800)
             # if not peak is None:
@@ -126,7 +125,7 @@ def TrackingJugglingVideo(vidpath, lowHSV, highHSV, min_area=250, framerate=60,
 
 
 lowerOrange = np.array([0, 190, 117])
-upperOrange = np.array([30, 256, 256])
+upperOrange = np.array([27, 256, 256])
 
 lowdeepblue = np.array([97, 118, 64])
 highdeepblue = np.array([115, 255, 255])
@@ -134,5 +133,5 @@ highdeepblue = np.array([115, 255, 255])
 lowaqua = np.array([46, 76, 63])
 highaqua = np.array([98, 255, 255])
 
-TrackingJugglingVideo("./source_videos/clubs.mp4", lowaqua,
-                      highaqua, min_area=200, show=True)
+TrackingJugglingVideo("./source_videos/showingOff.mp4", lowerOrange,
+                      upperOrange, min_area=200, show=True)

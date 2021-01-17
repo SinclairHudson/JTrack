@@ -53,13 +53,12 @@ def hsv_mask(img_path):
         mask = 255 - mask  # invert
 
         params = cv2.SimpleBlobDetector_Params()
-        params = cv2.SimpleBlobDetector_Params()
 
-        params.minThreshold = 10;
-        params.maxThreshold = 200;
+        params.minThreshold = 0;
+        params.maxThreshold = 256;
 
         params.filterByArea = True
-        params.minArea = 1500
+        params.minArea = 250
 
         params.filterByCircularity = True
         params.minCircularity = 0.0
@@ -72,15 +71,15 @@ def hsv_mask(img_path):
         params.minInertiaRatio = 0.01
 
         detector = cv2.SimpleBlobDetector_create(params)
-        mask = cv2.GaussianBlur(mask, (51, 51), 0)
+        # mask = cv2.GaussianBlur(mask, (11, 11), 0)
         keypoints = detector.detect(mask)
         print(keypoints)
 
-        frame = cv2.drawKeypoints(frame, keypoints, np.array([]),
+        detectframe = cv2.drawKeypoints(frame, keypoints, np.array([]),
         (0, 0, 255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-        dim = (width // 6, height // 6)
+        dim = (width // 3, height // 3)
         cv2.imshow('trackbars', cv2.resize(mask, dim, interpolation=cv2.INTER_AREA))
-        cv2.imshow('original image', cv2.resize(frame, dim, interpolation=cv2.INTER_AREA))
+        cv2.imshow('original image', cv2.resize(detectframe, dim, interpolation=cv2.INTER_AREA))
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
