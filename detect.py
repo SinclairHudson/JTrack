@@ -28,3 +28,33 @@ def detectBalls(image, hsv_low, hsv_high, min_area=200):
     keypoints = detector.detect(mask)
 
     return keypoints
+
+def detectClubs(image, hsv_low, hsv_high):
+
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(hsv, hsv_low, hsv_high)
+    mask = 255 - mask  # invert
+
+    params = cv2.SimpleBlobDetector_Params()
+
+    params.minThreshold = 10;
+    params.maxThreshold = 200;
+
+    params.filterByArea = True
+    params.minArea = 1500
+
+    params.filterByCircularity = True
+    params.minCircularity = 0.0
+    params.maxCircularity = 0.5
+
+    params.filterByConvexity = False
+    params.minConvexity = 0.87
+
+    params.filterByInertia = False
+    params.minInertiaRatio = 0.01
+
+    mask = cv2.GaussianBlur(mask, (51, 51), 0)
+    detector = cv2.SimpleBlobDetector_create(params)
+    keypoints = detector.detect(mask)
+
+    return keypoints

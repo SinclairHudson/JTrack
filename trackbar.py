@@ -12,12 +12,14 @@ def hsv_mask(img_path):
     cv2.namedWindow('trackbars')
 
     # inital values
-    ilowH = 16
-    ihighH = 48
-    ilowS = 147
-    ihighS = 253
-    ilowV = 150
+    ilowH = 46
+    ihighH = 98
+    ilowS = 76
+    ihighS = 255
+    ilowV = 63
     ihighV = 255
+    areaL = 0
+    areaH = 800
 
     # create trackbars for color change
     cv2.createTrackbar('lowH', 'trackbars', ilowH, 180, callback)
@@ -29,6 +31,9 @@ def hsv_mask(img_path):
     cv2.createTrackbar('lowV', 'trackbars', ilowV, 255, callback)
     cv2.createTrackbar('highV', 'trackbars', ihighV, 255, callback)
 
+    cv2.createTrackbar('areaL', 'trackbars', areaL, 10_000, callback)
+    cv2.createTrackbar('areaH', 'trackbars', areaH, 10_000, callback)
+
     while True:
         height, width = frame.shape[:2]
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -38,9 +43,41 @@ def hsv_mask(img_path):
         ihighS = cv2.getTrackbarPos('highS', 'trackbars')
         ilowV = cv2.getTrackbarPos('lowV', 'trackbars')
         ihighV = cv2.getTrackbarPos('highV', 'trackbars')
+        ilowV = cv2.getTrackbarPos('lowV', 'trackbars')
+        ihighV = cv2.getTrackbarPos('highV', 'trackbars')
+        areaL = cv2.getTrackbarPos('areaL', 'trackbars')
+        areaH = cv2.getTrackbarPos('areaH', 'trackbars')
         lower_hsv = np.array([ilowH, ilowS, ilowV])
         higher_hsv = np.array([ihighH, ihighS, ihighV])
         mask = cv2.inRange(hsv, lower_hsv, higher_hsv)
+        mask = 255 - mask  # invert
+
+        params = cv2.SimpleBlobDetector_Params()
+        params = cv2.SimpleBlobDetector_Params()
+
+        params.minThreshold = 10;
+        params.maxThreshold = 200;
+
+        params.filterByArea = True
+        params.minArea = 1500
+
+        params.filterByCircularity = True
+        params.minCircularity = 0.0
+        params.maxCircularity = 0.5
+
+        params.filterByConvexity = False
+        params.minConvexity = 0.87
+
+        params.filterByInertia = False
+        params.minInertiaRatio = 0.01
+
+        detector = cv2.SimpleBlobDetector_create(params)
+        mask = cv2.GaussianBlur(mask, (51, 51), 0)
+        keypoints = detector.detect(mask)
+        print(keypoints)
+
+        frame = cv2.drawKeypoints(frame, keypoints, np.array([]),
+        (0, 0, 255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
         dim = (width // 6, height // 6)
         cv2.imshow('trackbars', cv2.resize(mask, dim, interpolation=cv2.INTER_AREA))
         cv2.imshow('original image', cv2.resize(frame, dim, interpolation=cv2.INTER_AREA))
@@ -53,4 +90,4 @@ def hsv_mask(img_path):
 
 
 if __name__ == '__main__':
-    hsv_mask("frames/frame00000000.jpg")
+    hsv_mask("frames/frame00000150.jpg")

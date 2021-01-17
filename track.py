@@ -7,13 +7,13 @@ dim_z = 2
 
 
 class Track:
-    def __init__(self, initialx, initialy, temporal_frame=5):
+    def __init__(self, initialx, initialy, temporal_frame=70):
         self.id = id(self)
         self.prev_states = []
         self.temporal_frame = temporal_frame
         self.kf = KalmanFilter(dim_x=dim_x, dim_z=dim_z)
         self.kf.x = np.expand_dims(
-            np.array([initialx, initialy, 0, 0, -9.8]), axis=1)
+            np.array([initialx, initialy, 0, 0, 9.8]), axis=1)
         self.mia = 0
         self.age = 0
         self.kf.F = np.array([
@@ -58,7 +58,7 @@ class Track:
                 image, (int(self.kf.x[0]), int(self.kf.x[1])), 20, (0, 0, self.id % 256), -1)
         return image
 
-    def drawTemporalLines(self, image, colour=(0, 0, 255), min_age=5):
+    def drawTemporalLines(self, image, colour=(255, 255, 255), min_age=5):
         if self.age >= min_age:
             for x in range(len(self.prev_states)-1):
                 image = cv2.line(
@@ -82,6 +82,12 @@ class Track:
                      int(self.prev_states[x+1][1])),
                     bgr, 20)
         return image
+
+    def peak(self, max_y=800):
+        if(self.kf.x[3] > -2 and self.kf.x[3] < 2 and self.kf.x[1] < max_y):
+            return (self.kf.x[0], self.kf.x[1])  # x y coords
+        else:
+            return None
 
     def drawContrail(self, image, min_age=5):
         if self.age >= min_age:
