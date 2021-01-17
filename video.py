@@ -25,14 +25,15 @@ def TrackingJugglingVideo(vidpath, lowHSV, highHSV, min_area=250, framerate=60,
     success, image = vidcap.read()
     tracks = []
     print("tracking and drawing the frames... this may take some time.")
-    os.system("mkdir output")  # clean up
+    os.system("rm -rf output")  # clean up
+    os.system("mkdir output")  # create directory
     peaks = []
     while success:
 
         for track in tracks:
             track.predict()  # advance the kalman filters
 
-        detections = detectClubs(
+        detections = detectBalls(
             image, lowHSV, highHSV)
         num_detections = len(detections)
         num_tracks = len(tracks)
@@ -98,6 +99,7 @@ def TrackingJugglingVideo(vidpath, lowHSV, highHSV, min_area=250, framerate=60,
         # (255, 0, 0), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 
         for track in tracks:
+            # image = track.drawSpeedLines(image)
             image = track.drawContrail(image)
 
             # peak = track.peak(max_y=800)
@@ -124,8 +126,8 @@ def TrackingJugglingVideo(vidpath, lowHSV, highHSV, min_area=250, framerate=60,
     os.system("rm -rf output")  # clean up
 
 
-lowerOrange = np.array([0, 190, 117])
-upperOrange = np.array([27, 256, 256])
+lowerOrange = np.array([0, 192, 117])
+upperOrange = np.array([24, 256, 256])
 
 lowdeepblue = np.array([97, 118, 64])
 highdeepblue = np.array([115, 255, 255])

@@ -7,7 +7,7 @@ dim_z = 2
 
 
 class Track:
-    def __init__(self, initialx, initialy, temporal_frame=70):
+    def __init__(self, initialx, initialy, temporal_frame=9):
         self.id = id(self)
         self.prev_states = []
         self.temporal_frame = temporal_frame
