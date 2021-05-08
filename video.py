@@ -122,18 +122,21 @@ def TrackingJugglingVideo(vidpath, lowHSV, highHSV, min_area=250, framerate=60,
         count += 1
         success, image = vidcap.read()
 
-    os.system(f"ffmpeg -framerate {framerate} -i ./output/frame%08d.jpg -c:v libx264 -profile:v high -crf 20 -pix_fmt yuv420p {outfile}")
+    os.system(f"ffmpeg -framerate {framerate} -i ./output/frame%08d.jpg {outfile}")
     os.system("rm -rf output")  # clean up
 
 
 lowerOrange = np.array([0, 192, 117])
 upperOrange = np.array([24, 256, 256])
 
+deeplowOrange = np.array([0, 121, 69])
+deephighOrange = np.array([4, 256, 256])
+
 lowdeepblue = np.array([97, 118, 64])
 highdeepblue = np.array([115, 255, 255])
 
-lowaqua = np.array([46, 76, 63])
+lowaqua = np.array([46, 76, 20])
 highaqua = np.array([98, 255, 255])
 
-TrackingJugglingVideo("./source_videos/showingOff.mp4", lowerOrange,
-                      upperOrange, min_area=200, show=True)
+TrackingJugglingVideo("./source_videos/7orange.mp4", deeplowOrange,
+                      deephighOrange, min_area=50, show=True)

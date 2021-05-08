@@ -100,8 +100,8 @@ class Track:
                         self.prev_states[x][1])),
                     (int(self.prev_states[x+1][0]),
                      int(self.prev_states[x+1][1])),
-                    colour, 50)
-                blank = cv2.GaussianBlur(blank, (71, 71), 0)
+                    colour, 3)
+                blank = cv2.GaussianBlur(blank, (7, 7), 0)
                 blank = np.minimum(blank, white)  # keep it 255
 
             image += blank  # could be above 255
